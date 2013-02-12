@@ -13,11 +13,11 @@ this.Parser = function(text) {
 	this.parseBlock = function() {
 		var done = false;
 		var state_location_exp = /(Given|And) (I am at the) '([^']+)' (.+)/;
-		var action_select_exp = /(When I) (select) '([^']+)' (from the) '([^']+)' (menu)/;
+		var action_input_exp = /(When I|Then I) (select|fill) '([^']+)' (from the|in the) '([^']+)' (menu|field)/;
 		var outcome_exp = /(Then the) (.+)/;
 		var outcome_data_exp = /([^:]+): (.+)/;
 		var a = null;
-		var test = { "state": [], "action": null, "outcome": {} };
+		var test = { "state": [], "action": [], "outcome": {} };
 		do {
 			var line = this.lines[this.i++];
 			if(line == '' || line === undefined) {
@@ -25,12 +25,8 @@ this.Parser = function(text) {
 			}
 			else if((a = line.match(state_location_exp)) !== null) {
 				test.state[a[4]] = a[3];
-			} else if((a = line.match(action_select_exp)) !== null) {
-				var x = a[5];
-				var y = a[3];
-				test.action = function(browser, fn) {
-					browser.select(x, y, fn);
-				};
+			} else if((a = line.match(action_input_exp)) !== null) {
+				test.action.push({ "fn": a[2], "params": [ a[5], a[3] ]});
 			} else if((a = line.match(outcome_exp)) !== null) {
 				test.outcome.description = a[2];
 			} else if((a = line.match(outcome_data_exp)) !== null) {
@@ -46,7 +42,7 @@ this.Parser = function(text) {
 	}
 }
 
-this.Runner = function(browser, router, base_url) {
+this.Runner = function(browser, base_url) {
 	this.browser = browser;
 	this.base_url = base_url;
 
@@ -56,23 +52,21 @@ this.Runner = function(browser, router, base_url) {
 			describe('Test '+i, function() {
 				(function(n) {
 					it(tests[n].outcome.description, function() {
-						// set state:
-						var url = router(tests[n].state);
-						browser.visit(url, function(err) {
-							// do action:
+						// go to page:
+						var url = tests[n].state['page'];
+						browser.visit(base_url+url, function(err) {
 							expect(browser.success).toBe(true);
-							expect(browser.query('select[name=Language]')).toBeDefined();
 
-							if(browser.query('select')) {
-								tests[n].action(browser, function() {
-									expect(browser.success).toBe(true);
-									//console.log('expecting '+tests[n].outcome.text);
-									expect(browser.text('.'+tests[n].outcome.class)).toContain(tests[n].outcome.text);
-									asyncSpecDone();
-								});
-							} else {
+							var params = tests[n].action[0]["params"];
+							var fn = tests[n].action[0]["fn"];
+							//console.log('fn: '+fn+' params: '+params);
+							params.push(function() {
+								//console.log('browser text = '+browser.text('.'+tests[n].outcome.class));
+								expect(browser.success).toBe(true);
+								expect(browser.text('.'+tests[n].outcome.class)).toContain(tests[n].outcome.text);
 								asyncSpecDone();
-							}
+							});
+							browser[fn].apply(browser, params);
 						});
 						asyncSpecWait();
 					});
