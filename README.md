@@ -26,11 +26,11 @@ In person.feature:
 	input[name=URL]: http://www.google.com
 	#messages li: Updated person successfully.
 
-Edit zombie.spec.js and set app_url and readFileSync to the correct values (better configuration and test running coming soon!).
+Edit swarm.spec.js and set the config hash so it points to your webapp base URL and feature definitions.
 
 Then run the tests:
 
-	node_modules/jasmine-node/bin/jasmine-node tests/zombie.spec.js
+	node_modules/jasmine-node/bin/jasmine-node tests/swarm.spec.js
 
 Test authoring and configuration will improve. An intelligent front-end for writing tests that can be used easily by stakeholders would be great, hey?
 
