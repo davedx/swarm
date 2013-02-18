@@ -32,7 +32,7 @@ Then run the tests:
 
 	node_modules/jasmine-node/bin/jasmine-node tests/zombie.spec.js
 
-Hopefully this will get better. An intelligent front-end for writing tests that can be used easily by stakeholders would be great, hey?
+Test authoring and configuration will improve. An intelligent front-end for writing tests that can be used easily by stakeholders would be great, hey?
 
 [1] https://github.com/mhevery/jasmine-node
 
