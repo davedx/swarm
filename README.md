@@ -19,18 +19,18 @@ Example usage
 
 In person.feature:
 
-Given I am at the 'company/1/person/3/edit' page
-When I fill 'http://www.google.com' in the 'URL' field
-Then I click the 'Update' button
-Then the URL field should update:
-input[name=URL]: http://www.google.com
-#messages li: Updated person successfully.
+	Given I am at the 'company/1/person/3/edit' page
+	When I fill 'http://www.google.com' in the 'URL' field
+	Then I click the 'Update' button
+	Then the URL field should update:
+	input[name=URL]: http://www.google.com
+	#messages li: Updated person successfully.
 
 Edit zombie.spec.js and set app_url and readFileSync to the correct values (better configuration and test running coming soon!).
 
 Then run the tests:
 
-    node_modules/jasmine-node/bin/jasmine-node tests/zombie.spec.js
+	node_modules/jasmine-node/bin/jasmine-node tests/zombie.spec.js
 
 Hopefully this will get better. An intelligent front-end for writing tests that can be used easily by stakeholders would be great, hey?
 
