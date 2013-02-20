@@ -1,0 +1,6 @@
+{
+	"app_url": "http://dev.myapp.com/",
+	"features": [ "navigation.feature", "localize.feature", "baseedit.feature" ],
+	"test_db": { "data": "tests/testdb.sql", "username": "", "password": "", "db": "" },
+	"run": [ "baseedit.feature" ]
+}
